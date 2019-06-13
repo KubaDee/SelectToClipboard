@@ -83,7 +83,7 @@ extern "C" __declspec(dllexport) void beNotified(SCNotification *notifyCode)
 		break;
 
 		case SCN_UPDATEUI:
-			if (AlterMenuCheck(FindMenuItem(doUpdateCopySelected), '-'))  // check config stat a
+			if (AlterMenuCheck(FindMenuItem(doUpdateCopySelected), '-'))  // check if config is set on
 				doCopySelection();
 
 		default:

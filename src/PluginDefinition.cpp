@@ -226,7 +226,7 @@ void doCopySelection()
 	size_t p1 = (size_t)SENDMSGTOCED(currentEdit, SCI_GETSELECTIONSTART, 0, 0);
 	size_t p2 = (size_t)SENDMSGTOCED(currentEdit, SCI_GETSELECTIONEND, 0, 0);
 	
-	if (selPos.currentTabId != (int)GET_CURRENTTAB) // JD 1.0.1 - not copy to clipboard when switching between tabs
+	if (selPos.currentTabId != (int)GET_CURRENTTAB) // JD 1.0.1 - not copying to clipboard when switching between tabs
 	{
 		selPos.selBeg = p1;
 		selPos.selEnd = p2;
