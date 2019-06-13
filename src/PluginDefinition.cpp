@@ -41,6 +41,7 @@ unsigned miCopySelected; void doUpdateCopySelected() { bCopySelected = AlterMenu
 struct SelPos {
 	size_t selBeg;
 	size_t selEnd;
+	int currentTabId;
 };
 
 SelPos selPos;
@@ -54,6 +55,7 @@ SelPos selPos;
 // JD: Basic kod prevezmut z NFX
 #define INT_CURRENTEDIT int currentEdit
 #define GET_CURRENTEDIT SendMessage(nppData._nppHandle, NPPM_GETCURRENTSCINTILLA, 0, (LPARAM)&currentEdit)
+#define GET_CURRENTTAB  SendMessage(nppData._nppHandle, NPPM_GETCURRENTBUFFERID, 0, (LPARAM)&currentEdit)
 #define SENDMSGTOCED(whichEdit,mesg,wpm,lpm) SendMessage(((whichEdit)?nppData._scintillaSecondHandle:nppData._scintillaMainHandle),mesg,(WPARAM)(wpm),(LPARAM)(lpm))
 
 CString tmpMsg; // for MessageBoxExtra format
@@ -117,6 +119,7 @@ void pluginInit(HANDLE /*hModule*/)
 
 	selPos.selBeg = 0; // Set 0 as current position on init to avoid auto copy selected text on N++ start
 	selPos.selEnd = 0;
+	selPos.currentTabId = 0;
 }
 
 //
@@ -222,10 +225,17 @@ void doCopySelection()
 
 	size_t p1 = (size_t)SENDMSGTOCED(currentEdit, SCI_GETSELECTIONSTART, 0, 0);
 	size_t p2 = (size_t)SENDMSGTOCED(currentEdit, SCI_GETSELECTIONEND, 0, 0);
+	
+	if (selPos.currentTabId != (int)GET_CURRENTTAB) // JD 1.0.1 - not copy to clipboard when switching between tabs
+	{
+		selPos.selBeg = p1;
+		selPos.selEnd = p2;
+	}
 
 	if((selPos.selBeg != p1 || selPos.selEnd != p2) && p2 > p1 && selPos.selEnd != 0) CopyRoutine();
 	selPos.selBeg = p1;
 	selPos.selEnd = p2;
+	selPos.currentTabId = (int)GET_CURRENTTAB;
 }
 
 /// Set CString to Clipboard
