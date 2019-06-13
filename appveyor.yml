@@ -27,7 +27,7 @@ install:
 
 
 build_script:
-    - cd "%APPVEYOR_BUILD_FOLDER%"\vc.proj\
+    - cd "%APPVEYOR_BUILD_FOLDER%"\vs.proj\
     - msbuild SelectToClipboard.vcxproj /m /p:configuration="%configuration%" /p:platform="%platform_input%" /p:PlatformToolset="%PlatformToolset%" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 after_build:
