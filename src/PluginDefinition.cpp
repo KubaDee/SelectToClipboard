@@ -38,12 +38,12 @@ BOOL bCopySelected = FALSE;
 // inicializace fci pro zmenu checku v menu konfig (funkce prehazuje 1/0)
 unsigned miCopySelected; void doUpdateCopySelected() { bCopySelected = AlterMenuCheck(miCopySelected, '!'); }
 
+// current position and tab
 struct SelPos {
 	size_t selBeg;
 	size_t selEnd;
 	int currentTabId;
 };
-
 SelPos selPos;
 
 //
@@ -52,13 +52,10 @@ SelPos selPos;
 #define SCDS_COPYRECTANGULAR 0x4 /* Mark the text as from a rectangular selection according to the Scintilla standard */
 #define SCDS_COPYAPPEND 0x8 /* Reads the old clipboard (depends on flags) and appends the new text to it */
 
-// JD: Basic kod prevezmut z NFX
 #define INT_CURRENTEDIT int currentEdit
 #define GET_CURRENTEDIT SendMessage(nppData._nppHandle, NPPM_GETCURRENTSCINTILLA, 0, (LPARAM)&currentEdit)
 #define GET_CURRENTTAB  SendMessage(nppData._nppHandle, NPPM_GETCURRENTBUFFERID, 0, (LPARAM)&currentEdit)
 #define SENDMSGTOCED(whichEdit,mesg,wpm,lpm) SendMessage(((whichEdit)?nppData._scintillaSecondHandle:nppData._scintillaMainHandle),mesg,(WPARAM)(wpm),(LPARAM)(lpm))
-
-CString tmpMsg; // for MessageBoxExtra format
 
 const char eoltypes[3][4] = { ("\r\n"), ("\r"), ("\n") };
 #ifndef NELEM
@@ -109,7 +106,8 @@ bool strcatX(char**(orig), const char* concatenateText)
 }
 
 
-/* =========================================== INIT BEGIN =========================================== */
+//* =========================================== INIT BEGIN =========================================== */
+
 //
 // Initialize your plugin data here
 // It will be called while plugin loading   
@@ -181,7 +179,10 @@ bool setCommand(size_t index, TCHAR *cmdName, PFUNCPLUGINCMD pFunc, ShortcutKey 
 //-- STEP 4. DEFINE YOUR ASSOCIATED FUNCTIONS --//
 //----------------------------------------------//
 
-/// ulozi text do schranky
+
+//* ============= COPY selection part ============= */
+
+/// insert text into clipboard
 void InsertTextToClipboard(const char * strInput, unsigned flags)
 {
 	INT_CURRENTEDIT;
@@ -218,6 +219,7 @@ void InsertTextToClipboard(const char * strInput, unsigned flags)
 	}
 }
 
+///  Process selected text and copy if selection has changed
 void doCopySelection()
 {
 	INT_CURRENTEDIT;
@@ -237,37 +239,6 @@ void doCopySelection()
 	selPos.selEnd = p2;
 	selPos.currentTabId = (int)GET_CURRENTTAB;
 }
-
-/// Set CString to Clipboard
-bool SetClipboard(CString textToclipboard)
-{
-	bool success = true;
-
-	if (OpenClipboard(NULL)) {
-		EmptyClipboard();
-		HGLOBAL hClipboardData;
-		size_t size = (textToclipboard.GetLength() + 1) * sizeof(TCHAR);
-		hClipboardData = GlobalAlloc(NULL, size);
-		TCHAR* pchData = (TCHAR*)GlobalLock(hClipboardData);
-		memcpy(pchData, LPCTSTR(textToclipboard.GetString()), size);
-		SetClipboardData(CF_UNICODETEXT, hClipboardData);
-		//SetClipboardData(cfColumnSelect, 0); // pri vkladani RECT
-		GlobalUnlock(hClipboardData);
-		CloseClipboard();
-	}
-	return success;
-}
-
-/// Set CString to Clipboard
-bool SetClipboard(char* textToclipboard)
-{
-	CString txtToClp;
-	txtToClp.Format(_T("%s"), textToclipboard);
-	return SetClipboard(txtToClp);
-}
-
-
-/* ============= COPY selected part ============= */
 
 /// Make Cupy/Cut with text
 void CopyRoutine()
@@ -378,7 +349,7 @@ void CopyRoutine()
 }
 
 
-/* ============= INI config part ============= */
+//* ============= INI config part ============= */
 
 unsigned FindMenuItem(PFUNCPLUGINCMD _pFunc)
 {
@@ -421,7 +392,6 @@ void IniSaveSettings(bool save)
 	}
 }
 
-
 /// Check settings menu item
 bool AlterMenuCheck(int itemno, char action)
 {
@@ -444,7 +414,8 @@ bool AlterMenuCheck(int itemno, char action)
 	return(funcItem[itemno]._init2Check);
 }
 
-/* ============= About dialog ============= */
+
+//* ============= About dialog ============= */
 
 void doAboutDlg()
 {
