@@ -8,7 +8,7 @@ N++ plugin - auto copy selected text to clipboard. You can automatically copy se
 Latest Updates:
 ----  
 ### v1.0.1
-Not copying text to clipboard when switching between tabs
+Fixed copying text to clipboard when switching between tabs
 
 ### v1.0
 Initial release
