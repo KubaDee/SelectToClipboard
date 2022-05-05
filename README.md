@@ -1,5 +1,5 @@
 # SelectToClipboard
-[![Build status](https://ci.appveyor.com/api/projects/status/github/kubadee/npptextviz?svg=true)](https://github.com/KubaDee/SelectToClipboard)
+[![Build status](https://ci.appveyor.com/api/projects/status/github/kubadee/SelectToClipboard?svg=true)](https://github.com/KubaDee/SelectToClipboard)
 ### by Jakub Dvorak
 
 
