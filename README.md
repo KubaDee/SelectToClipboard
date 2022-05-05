@@ -7,6 +7,9 @@ N++ plugin - auto copy selected text to clipboard. You can automatically copy se
 
 Latest Updates:
 ----  
+### v1.0.3
+Fix crash on N++ version 8.3+
+
 ### v1.0.2
 Code tidying
 
