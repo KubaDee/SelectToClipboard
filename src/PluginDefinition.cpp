@@ -309,7 +309,7 @@ void CopyRoutine()
 
 		if (!isError) {
 			for (buflen = 0, ln = 0; ln < lplen; ln++) {
-				struct TextRange tr;
+				struct Sci_TextRange tr;
 				tr.chrg.cpMin = lps[ln];
 				tr.chrg.cpMax = lpe[ln];
 
